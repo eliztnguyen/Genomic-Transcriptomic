@@ -12,7 +12,7 @@ AmiGO2;
 Reactome;
 Kyto Encyclopedia of Genes and Genomes; 
 UniProKB;
-Genomicus; 
+Genomicus. 
 
 Write up: Gene Assignment - GM7609.docx
 
