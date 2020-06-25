@@ -33,7 +33,7 @@ For a given sample, the allele frequency spectrum details the number of SNPs for
 Computed and plotted the allele frequency spectrum for the sample of European individuals and for the sample of African individuals.
 
 Assignment6:
-R functions:
+R functions.
 1) For a given file from the '1000 Genomes Project', calculates the average pairwise diversity between two samples of individuals.
 The pairwise diversity number details how many SNPs differ between the haplotypes of a random individual from sample1 and a random indivividual from sample2.
 The mean pairwise diversity is the average of the mean of the differences for n randomly chosen pairs.
