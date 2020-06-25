@@ -1,0 +1,183 @@
+---
+title: "Assignment5 by Elizabeth Nguyen"
+output: 
+  pdf_document: default
+  html_notebook: default
+---
+
+On Blackboard is a file called: “abbgen1k.csv”. This file is a subset of the 1,000
+Genomes Project for chromosome 22. The format is the same as we discussed in class: rows are
+SNPs, columns 1 to 9 (R starts with 1) are details about the SNPs, columns 10 to 90 are unrelated
+individuals from Europe, and columns 91 to 179 are unrelated individuals from Africa.
+
+
+Prompt 1
+
+It is possible that a SNP is polymorphic in the world-wide sample, but not polymorphic in a
+given population sample. Count the number of SNPs in “abbgen1k.csv” for which the ALT allele
+does NOT have frequency 0 in the sample of Europeans individuals. Also count this number for
+the sample of African individuals. Due to the out-of-Africa hypothesis, we expect that this
+number is greater for the African sample than the European sample. Is this what we observe?
+
+```{r}
+# read in Assigment and test data
+testdata <- read.csv("shorttesteg.csv",stringsAsFactors=F)
+abbgen1k <- read.csv("abbgen1k.csv",stringsAsFactors=F)
+```
+
+Examine file format
+```{r}
+# look across all columns
+testdata[1,]
+# confirm columns 1:9 are SNPs details
+testdata[1, 1:9]
+# confirm E columns
+testdata[1, 10:14]
+# confirm A columns
+testdata[1, 15:19]
+```
+
+Subset testdata
+```{r}
+testdataE <- testdata[, 10:14]
+testdataE
+testdataA <- testdata[, 15:19]
+testdataA
+```
+
+
+Code for assessing if any SNPs present
+```{r}
+rowSNP <- function(v) {
+  cnt = sum(v == "1|0") + sum(v == "0|1") + 2*sum(v == "1|1")
+  return(cnt > 0)  # returns TRUE or FALSE
+}
+```
+
+Code for counting the number of SNPs in dataframe for which the ALT allele does NOT have frequency 0
+```{r}
+cntSNPs <- function(x) {
+  z = apply(x,1,rowSNP) 
+  # the 1 means apply to every row
+  # is now a vector: the ith element is the answer for the ith row of x 
+  return(sum(z))
+}
+```
+
+Test functions for sample data
+```{r}
+cntSNPs(testdataA)
+cntSNPs(testdataE)
+```
+
+The test code worked appropriately.
+Let's now tackle the assignment questions:
+
+Count the number of SNPs in “abbgen1k.csv” for which the ALT allele does NOT have frequency 0 in the sample of Europeans individuals. Columns 10 to 90 are unrelated individuals from Europe.
+```{r}
+abbEuro <- abbgen1k[, 10:90]  # subset European individuals
+#dim(abbEuro)  # dimensions for European subset
+cntSNPs(abbEuro)  # counts number of non-zero frequency SNPs for European individuals
+```
+
+Count this number for the sample of African individuals. Columns 91 to 179 are unrelated individuals from Africa.
+```{r}
+abbAfr <- abbgen1k[, 91:179]  # subset Afridcan individuals
+#dim(abbAfr)  # dimensions for African subset
+cntSNPs(abbAfr)  # counts number of non-zero frequency SNPs for African individuals
+```
+
+Due to the out-of-Africa hypothesis, we expect that this number is greater for the African sample than the European sample. Is this what we observe?
+In accordance with the out-of-African hypothesis, the number of non-zero frequency SNPs is indeed greater for the African sample than the European sample.
+
+
+\pagebreak
+Prompt 2
+
+Generalize this to compute the allele frequency spectrum. The allele frequency spectrum is the
+number of SNPs for which there are k haplotypes that have the ALT allele in the sample. k
+ranges from 1 to the number of haplotypes in the sample (see slide 65 in the Population Genetics
+lecture slides). Use the built-in R function “barplot” to make two plots: the allele frequency
+spectrum for the European individuals and the allele frequency spectrum for the African
+individuals. Comment on the similarity and the differences between the plots.
+
+
+Code for assessing frequency of ALT allele among haplotypes, across individuals
+```{r}
+rowSNP <- function(v) {
+  cnt = sum(v == "1|0") + sum(v == "0|1") + 2*sum(v == "1|1")  # counts each ALT allele across individuals
+  return(cnt)  # returns number of ALT alleles
+}
+```
+
+Code for allele frequency count vector
+```{r}
+altFreq <- function(x) {
+  z <- apply(x, 1, rowSNP)  # list of number of ALT allele for EACH SNP
+  return(z)
+}
+```
+
+Code for allele frequency matrix
+```{r}
+spectrum <- function(x) {
+  n <- length(x[1,])
+  m <- matrix(0, nrow = 1, ncol = 2*n)  # empty matrix for up to maximum number of ALT alleles for a given SNP
+  listAltFreq <- altFreq(x)  # list of number of ALT allele for EACH SNP
+  for (i in listAltFreq) {
+    if (i > 0) {
+      m[1,i] = m[1,i] + 1  # increment appropriate position in matrix for number of ALT allele for each SNP > 0
+    }
+  }
+  colnames(m) <- c(1:(2*n))  # applies number header to matrix
+  return(m)  # return allele frequency matrix
+}
+```
+
+
+Barplots for Allele Frequency Spectrum
+```{r}
+spectrumE <- spectrum(testdataE)
+#spectrumE
+barplot(spectrumE,
+        xlab = "Number ALT Alleles",
+        ylab = "Number of SNPs",
+        main = "Short E Sample",
+        )
+
+spectrumA <- spectrum(testdataA)
+#spectrumA
+barplot(spectrumA,
+        xlab = "Number ALT Alleles",
+        ylab = "Number of SNPs",
+        main = "Short A Sample",
+        )
+```
+
+The test code worked appropriately.
+Let's now tackle the assignment questions:
+
+The allele frequency spectrum for the European individuals
+```{r}
+spectrumEuro <- spectrum(abbEuro)
+spectrumEuro
+barplot(spectrumEuro,
+        xlab = "Number ALT Alleles",
+        ylab = "Number of SNPs",
+        main = "European Sample",
+        )
+```
+
+The allele frequency spectrum for the African individuals.
+```{r}
+spectrumAfr <- spectrum(abbAfr)
+spectrumAfr
+barplot(spectrumAfr,
+        xlab = "Number ALT Alleles",
+        ylab = "Number of SNPs",
+        main = "African Sample",
+        )
+```
+
+Comment on the similarity and the differences between the plots.
+Even though the number of non-zero frequency SNPs is greater for the African sample than the European sample, their allele frequency spectrums look pretty similar. Both European and African samples have many SNPs with only one ALT allele across all individuals sampled. And for both groups, most SNPs have only a few ALT alleles across individuals sampled. However, both groups have a handful of SNPs with a fairly high number of ALT alleles across individuals sampled. The European sample includes 81 individuals, while the AFrican sample includes 89 individuals. Both samples have a handful of SNPs that have two ALT alleles across all individuals. The number of possible ALT allels for the African sample is greater than that of the European sample because the African sample includes more people.
