@@ -1,2 +1,2 @@
-# GitTranscriptomic
-Files and scripts related to the analysis of transcriptomic data (including RNA-seq).
+# Genomic-Transcriptomic
+Files and scripts related to the analysis of genomic data (including RNA-seq).
