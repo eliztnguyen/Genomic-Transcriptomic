@@ -3,17 +3,9 @@ These scripts were written to be interactive and user friendly for non-coders.
 This script is meant to organize RNAseq data downloaded for any one gene from the Allen Brain Aging and TBI Database.
 https://aging.brain-map.org/overview/explore
 
-Databases explored/queried:
-NCBI gene database;
-Ensembl genome browser;
-USCB genome browser;
-National Library of Medicine’s Conserved Domain Database;
-Interpro;
-AmiGO2;
-Reactome;
-Kyto Encyclopedia of Genes and Genomes; 
-UniProKB;
-Genomicus. 
+Scripts:
+AllenBrainAgingTBIgenes.R = Associates RNAseq data with the relevant donor ID/info and breaks the data by region of interest (ROI);
+AllenBrain_ROIexpression_byGroup.R = Takes the ROI data and subsets it by Alzheimer's status and sex.
 
 Files for sample run/reference:
 Contents.txt = summary of data downloaded from database;
